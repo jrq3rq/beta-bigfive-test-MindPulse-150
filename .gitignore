@@ -1,23 +1,69 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# dependencies
+# Dependencies
 /node_modules
 /.pnp
 .pnp.js
 
-# testing
+# Testing
 /coverage
 
-# production
+# Production
 /build
 
-# misc
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Miscellaneous
 .DS_Store
+
+# Editor directories and files
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*~.nib
+.vscode/
+
+# Operating System generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Python virtual environment
+venv/
+*.pyc
+
+# Proprietary data and sensitive information
+# (Add the file or directory paths of proprietary data here)
+
+# Other files and directories
+# (Add any additional files/directories that you want to ignore)
+
+# Firebase
+.firebase/
+.firebaserc
+firebase.json
+**/firebase-debug.log
+
+# Firestore files (if any local JSON or exported data files exist)
+**/firestore.rules
+**/firestore.indexes.json
+**/firestore.export.json
+**/firestore.import.json
+
+# Security
+# Note: Always exclude files that contain sensitive information, such as API keys or secrets.
+# For Firebase, this often includes configuration files or service account JSON files.
+**/serviceAccountKey.json
+
+# Environment Variables
+.env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# (Rest of your existing .gitignore entries)

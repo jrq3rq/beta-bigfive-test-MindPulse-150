@@ -1,70 +1,68 @@
-# Getting Started with Create React App
+# Personality Test Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+```markdown
+Personality-Test-App
+├── public/
+│ └── index.html # Main HTML file
+├── src/
+│ ├── components/
+│ │ ├── PersonalityTest.js # Main component for handling personality test logic
+│ │ └── QuestionComponent.js # Component to render individual questions
+│ ├── services/
+│ │ └── APIService.js # (Optional) Service for API calls
+│ ├── App.js # Main React component
+│ ├── App.css # Styles for the application
+│ └── index.js # Entry point for React application
+├── .env
+├── .gitignore # List of files to be ignored by git
+├── README.md # Documentation and instructions
+├── package.json # NPM package configuration
+└── node_modules/ # Node modules (dependencies)
+└── (various modules)
+```
 
-## Available Scripts
+This repository contains a React-based web application designed to conduct a personality test based on the Big Five personality traits model. The application dynamically fetches questions associated with each of the five traits - Openness, Conscientiousness, Extraversion, Agreeableness, and Neuroticism - from a local API and tallies responses to present a final score.
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- **Dynamic Question Loading**: Questions for each personality trait are loaded dynamically from a local API.
+- **Trait Description**: Each set of questions is preceded by a description of the corresponding personality trait.
+- **Responsive Design**: The UI is responsive and user-friendly, making it accessible on various devices.
+- **Reverse Scoring**: Certain questions are reverse scored based on the `isReverseScored` property in the API response.
+- **Progressive Questionnaire**: Users navigate through the questionnaire trait by trait, with progress indication.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Installation and Setup
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+1. **Clone the Repository**: Clone this repository to your local machine using `git clone`.
+2. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
+   This command installs all the necessary dependencies.
+3. **Run the Application**:
+   ```bash
+   npm start
+   ```
+   This will start the application on localhost:3000 (or your default React port).
+4. **API Setup**: Ensure the local API server is running at `http://localhost:3000/bigFive/`. The application expects the API to return data in a specific format.
 
-### `npm test`
+### API Response Format
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+The application expects the API to return an array of objects, each representing a personality trait with its description and associated questions. For example:
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```json
+[
+  {
+    "trait": "Openness",
+    "description": "A measure of one's appreciation for art, emotion, adventure, unusual ideas, imagination, curiosity, and variety of experience.",
+    "questions": [
+      {
+        "text": "I have a rich vocabulary.",
+        "isReverseScored": false
+      }
+      // More questions...
+    ]
+  }
+  // Other traits...
+]
+```
