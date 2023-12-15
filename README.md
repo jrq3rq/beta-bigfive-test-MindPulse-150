@@ -4,6 +4,9 @@
 Personality-Test-App
 ├── public/
 │ └── index.html # Main HTML file
+│ ├── data/
+│ │ ├── archetype-crystal1.png
+│ │ └── archetype-crystal12.png
 ├── src/
 │ ├── components/
 │ │ ├── PersonalityTest.js # Main component for handling personality test logic

@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 const QuestionContainer = styled.div`
-  margin: 20px 0;
+  margin: 20px 0px 20px 0px;
   padding: 20px;
   /* box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); */
   @media (max-width: 600px) {
@@ -12,6 +12,7 @@ const QuestionContainer = styled.div`
 
 const QuestionText = styled.p`
   font-size: 1.2em;
+
   color: #fff;
   /* color: #333; */
   padding: 10px;
@@ -35,28 +36,33 @@ const OptionContainer = styled.div`
   align-items: center;
   margin-bottom: 10px;
   margin: 10px 20px 0px 20px;
+  padding: 10px;
+  cursor: pointer; // Makes the entire pink area clickable
   @media (min-width: 601px) {
     margin-right: 15px; // Space out options on larger screens
   }
 `;
 
 const RadioInput = styled.input`
-  margin-bottom: 5px; // Space between radio button and label
+  margin-right: 10px; // Space between radio button and text
+  cursor: pointer; // Change cursor to pointer on hover
 `;
 
 const RadioLabel = styled.label`
   font-size: 0.9em;
   color: #666;
   text-align: center;
+  cursor: pointer; // Change cursor to pointer on hover
+  display: flex;
+  align-items: center;
 `;
 
 const QuestionComponent = ({ question, onChange, name }) => {
   const likertOptions = [
     { text: "Very Inaccurate", value: 0 },
-    { text: "Inaccurate", value: 0.2 },
-    { text: "Somewhat Inaccurate", value: 0.4 },
-    { text: "Somewhat Accurate", value: 0.6 },
-    { text: "Accurate", value: 0.8 },
+    { text: "Somewhat Inaccurate", value: 0.25 },
+    { text: "Neither Accurate Nor Inaccurate", value: 0.5 },
+    { text: "Somewhat Accurate", value: 0.75 },
     { text: "Very Accurate", value: 1.0 },
   ];
 
@@ -66,14 +72,16 @@ const QuestionComponent = ({ question, onChange, name }) => {
       <LikertScaleContainer>
         {likertOptions.map((option, index) => (
           <OptionContainer key={index}>
-            <RadioInput
-              type="radio"
-              id={`${name}_${index}`}
-              name={name}
-              value={option.value}
-              onChange={onChange}
-            />
-            <RadioLabel htmlFor={`${name}_${index}`}>{option.text}</RadioLabel>
+            <RadioLabel htmlFor={`${name}_${index}`}>
+              <RadioInput
+                type="radio"
+                id={`${name}_${index}`}
+                name={name}
+                value={option.value}
+                onChange={onChange}
+              />
+              {option.text}
+            </RadioLabel>
           </OptionContainer>
         ))}
       </LikertScaleContainer>
