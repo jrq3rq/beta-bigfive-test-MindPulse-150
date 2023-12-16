@@ -181,6 +181,29 @@ const Button = styled.button`
   }
 `;
 
+// Define a styled component for displaying error messages
+const ErrorContainer = styled.div`
+  background-color: #ffcccc; // Light red background for error visibility
+  color: #cc0000; // Dark red color for error text
+  padding: 20px;
+  margin: 0px 0;
+  border-radius: 8px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  font-size: 1.2em;
+`;
+
+const LoadingContainer = styled.div`
+  background-color: #ccffcc; // Light green background for visibility
+  color: #008000; // Dark green color for text
+  padding: 20px;
+  margin: 0px 0;
+  border-radius: 8px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  font-size: 1.2em;
+`;
+
 const StyledParagraph = styled.p`
   font-size: 1em; // Example: Change font size
   color: #333; // Example: Text color
@@ -466,8 +489,9 @@ const PersonalityTest = () => {
     }, 2000);
   };
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (isLoading) return <LoadingContainer>Loading...</LoadingContainer>;
+  if (error)
+    return <ErrorContainer>MindPulse-150 Error: {error}</ErrorContainer>;
 
   const modalContent = loading ? (
     <LoadingSpinner>
