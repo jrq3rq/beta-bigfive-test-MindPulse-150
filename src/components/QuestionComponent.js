@@ -36,7 +36,6 @@ const OptionContainer = styled.div`
   align-items: center;
   margin-bottom: 10px;
   margin: 10px 20px 0px 20px;
-  padding: 10px;
   cursor: pointer; // Makes the entire pink area clickable
   @media (min-width: 601px) {
     margin-right: 15px; // Space out options on larger screens
@@ -55,9 +54,18 @@ const RadioLabel = styled.label`
   cursor: pointer; // Change cursor to pointer on hover
   display: flex;
   align-items: center;
+  padding: 10px;
 `;
 
-const QuestionComponent = ({ question, onChange, name }) => {
+const QuestionComponent = ({
+  question,
+  isReverseScored,
+  onChange,
+  name,
+  isAnswered, // Add this prop
+}) => {
+  const questionStyle = isAnswered ? {} : { backgroundColor: "#ffcccc" }; // Highlight unanswered questions
+
   const likertOptions = [
     { text: "Very Inaccurate", value: 0 },
     { text: "Somewhat Inaccurate", value: 0.25 },
@@ -67,7 +75,7 @@ const QuestionComponent = ({ question, onChange, name }) => {
   ];
 
   return (
-    <QuestionContainer>
+    <QuestionContainer style={questionStyle}>
       <QuestionText>{question}</QuestionText>
       <LikertScaleContainer>
         {likertOptions.map((option, index) => (

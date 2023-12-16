@@ -6,6 +6,16 @@ Personality-Test-App
 │ └── index.html # Main HTML file
 │ ├── data/
 │ │ ├── archetype-crystal1.png
+│ │ ├── archetype-crystal2.png
+│ │ ├── archetype-crystal3.png
+│ │ ├── archetype-crystal4.png
+│ │ ├── archetype-crystal5.png
+│ │ ├── archetype-crystal6.png
+│ │ ├── archetype-crystal7.png
+│ │ ├── archetype-crystal8.png
+│ │ ├── archetype-crystal9.png
+│ │ ├── archetype-crystal10.png
+│ │ ├── archetype-crystal11.png
 │ │ └── archetype-crystal12.png
 ├── src/
 │ ├── components/
