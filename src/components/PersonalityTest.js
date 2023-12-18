@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import QuestionComponent from "./QuestionComponent";
 import styled from "styled-components";
 import BounceLoader from "react-spinners/MoonLoader"; // Ensure you have installed react-spinners
 import { IoClose } from "react-icons/io5"; // Import the close icon
 import { FaUserAlt } from "react-icons/fa"; // Importing a user icon as an example
 import { SlPicture } from "react-icons/sl";
+import QRCode from "qrcode.react";
 
 const Container = styled.div`
   /* background-color: rgb(255, 192, 203); */
@@ -21,17 +22,50 @@ const CloseIconContainer = styled.div`
   cursor: pointer;
 `;
 
+const Header = styled.div`
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 1em;
+  padding: 10px 10px 0px 10px;
+`;
+
+const SubHeader = styled.div`
+  font-size: 0.9em;
+  padding: 0px 10px 10px 10px;
+`;
+
 const ScoreCard = styled.div`
-  padding: 20px;
-  margin-bottom: 10px;
-  background-color: #282c34; // Green background
+  padding: 40px 10px;
+  color: #fff;
+  background-color: #282c34;
+  border-radius: 10px;
+  overflow-wrap: break-word; // Break long words to prevent overflow
+  overflow-x: auto; // Horizontal scrollbar if necessary
+  max-height: 200px; // Set a maximum height
+  @media (max-width: 600px) {
+    font-size: 0.7em; // Smaller text on smaller screens
+    padding: 20px 10px;
+  }
+`;
+const ScoreParagraph = styled.p`
+  font-size: 0.8em;
+  color: #333;
+  margin: 5px 0;
+  white-space: nowrap; // Prevents text from wrapping to the next line
+  overflow: hidden; // Hides overflow
+  text-overflow: ellipsis; // Adds ellipsis to overflowing text
+`;
+
+const QRScoreCard = styled.div`
+  padding: 5px 10px 5px 10px;
+  background-color: transparent; // Green background: ;
   color: #fff;
 `;
 
 const Card = styled.div`
   width: 400px;
   @media (max-width: 600px) {
-    width: auto;
+    width: 100%;
   }
 `;
 
@@ -81,15 +115,15 @@ const Modal = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: white;
-  padding: 50px;
+  padding: 30px 20px 10px 20px;
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   z-index: 100;
   display: ${(props) => (props.show ? "block" : "none")};
   /* Adjust width and layout as needed */
   @media (max-width: 600px) {
-    width: 50%;
-    padding: 25px;
+    width: 80%;
+    /* padding: 25px; */
   }
 `;
 const CardHeader = styled.h4`
@@ -128,13 +162,6 @@ const StyledButton = styled.button`
   }
 `;
 
-const ScoreParagraph = styled.p`
-  font-size: 1em; // Adjust the font size as needed
-  color: #fff; // Adjust the text color as needed
-  margin: 10px 0; // Adjust top and bottom margins as needed
-  text-align: left; // Align text to left, right, or center as needed
-`;
-
 const TraitName = styled.span`
   font-size: 1em; // Adjust the font size as needed
   color: #fff; // Adjust the text color as needed
@@ -145,13 +172,21 @@ const TraitName = styled.span`
 `;
 
 const ScoreValue = styled.span`
-  font-size: 0.9em; // Slightly smaller font size for the score
-  color: #999; // Different color for the score
+  font-size: 1em; // Slightly smaller font size for the score
+  color: #e05063; // Different color for the score
   margin-left: 2px; // Space between the trait name and score
 `;
 
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0px 10px 0px; // Adjust as needed
+  gap: 10px;
+`;
+
 const Button = styled.button`
-  background-color: #282c34; // Green background
+  background-color: #282c34;
   border: none;
   color: white;
   padding: 10px 20px;
@@ -160,11 +195,12 @@ const Button = styled.button`
   display: inline-block;
   font-size: 16px;
   width: 100%;
+  border-radius: 5px;
+  // Gives space between buttons
   cursor: pointer;
   transition: background-color 0.3s ease;
-  border: 1px solid #282c34;
+
   &:hover {
-    color: #fff; // Darker shade for hover
     background-color: #666;
   }
 
@@ -176,9 +212,18 @@ const Button = styled.button`
 
   @media (max-width: 600px) {
     padding: 7px 14px; // 30% smaller padding
-    font-size: 12px; // Slightly smaller font size
-    margin: 10px 2px 2px 2px;
+    font-size: 10px; // Slightly smaller font size
   }
+`;
+
+const FlexContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const HalfWidthDiv = styled.div`
+  width: 50%;
 `;
 
 // Define a styled component for displaying error messages
@@ -364,6 +409,10 @@ const PersonalityTest = () => {
   const [archetypeImage, setArchetypeImage] = useState("");
   const [answeredQuestions, setAnsweredQuestions] = useState({});
   const [matchedArchetypeName, setMatchedArchetypeName] = useState("");
+  const [qrCodeData, setQrCodeData] = useState(""); // State to store QR code data
+  const [showQRCode, setShowQRCode] = useState(false); // New state variable
+  const [isQRCodeGenerating, setIsQRCodeGenerating] = useState(false);
+  const [qrButtonLabel, setQrButtonLabel] = useState("Generate QRKey");
 
   const someThreshold = 0.5; // Replace 0.5 with your actual threshold value
 
@@ -437,11 +486,6 @@ const PersonalityTest = () => {
     }
   };
 
-  // const handlePrevTrait = () => {
-  //   if (allQuestionsAnswered() && currentTraitIndex > 0) {
-  //     setCurrentTraitIndex(currentTraitIndex - 1);
-  //   }
-  // };
   const handlePrevTrait = () => {
     if (currentTraitIndex === traits.length - 1) {
       // Reset the test
@@ -479,14 +523,53 @@ const PersonalityTest = () => {
     setTimeout(() => {
       const scores = calculateFinalScores();
       setFinalScores(scores);
+      setShowQRCode(false); // Ensure QR code does not show automatically
 
       const archetypeMatch = determineArchetype(scores);
       setMatchedArchetypeName(archetypeMatch.name);
       setArchetypeImage(archetypeMatch.imagePath);
 
       setLoading(false);
-      setImageLoaded(true); // Ensure this is set to true here
+      setImageLoaded(true);
     }, 2000);
+  };
+
+  const generateQRCode = () => {
+    setQrButtonLabel("Loading...");
+    setIsQRCodeGenerating(true);
+
+    setTimeout(() => {
+      // Assuming finalScores holds the final scores
+      const userScoresJSON = JSON.stringify({
+        Openness: finalScores.Openness,
+        Conscientiousness: finalScores.Conscientiousness,
+        Extraversion: finalScores.Extraversion,
+        Agreeableness: finalScores.Agreeableness,
+        Neuroticism: finalScores.Neuroticism,
+      });
+
+      setQrCodeData(userScoresJSON);
+      setShowQRCode(true); // Display the QR code
+      setIsQRCodeGenerating(false); // End the loading state
+      setQrButtonLabel("Generate QRKey"); // Reset the button label
+    }, 1000); // Delay of 1 second
+  };
+  const qrCodeRef = useRef(null);
+
+  const downloadQRCode = () => {
+    const qrElement = qrCodeRef.current;
+    if (qrElement) {
+      const canvas = qrElement.querySelector("canvas");
+      if (canvas) {
+        const image = canvas.toDataURL("image/png");
+        const link = document.createElement("a");
+        link.href = image;
+        link.download = "QRCode.png";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    }
   };
 
   if (isLoading) return <LoadingContainer>Loading...</LoadingContainer>;
@@ -504,34 +587,53 @@ const PersonalityTest = () => {
           <IoClose size={30} /> {/* Adjust size as needed */}
         </CloseIconContainer>
         {/* Display the matched archetype name here */}
-
-        <h2>Gemstone</h2>
-        <p>{matchedArchetypeName}</p>
-        <ImageContainer>
-          {imageLoaded && (
-            <Image
-              src={archetypeImage}
-              alt="Archetype Image"
-              onLoad={() => setImageLoaded(true)}
-            />
-          )}
-          {/* <SlPicture size={100} color="#282c34" /> */}
-        </ImageContainer>
-        <Button>Build</Button>
-        {imageLoaded && (
-          <>
-            <CardHeader>Your Scores</CardHeader>
+        <Header>Gemstone</Header>
+        <SubHeader>{matchedArchetypeName}</SubHeader>
+        <FlexContainer>
+          <HalfWidthDiv>
+            {/* Scores Display */}
             <ScoreCard>
               {Object.entries(finalScores).map(([trait, score]) => (
                 <ScoreParagraph key={trait}>
                   <TraitName>{trait}:</TraitName>
-                  <ScoreValue> {score}</ScoreValue>
+                  <ScoreValue>{score}</ScoreValue>
                 </ScoreParagraph>
               ))}
             </ScoreCard>
+          </HalfWidthDiv>
+          <HalfWidthDiv>
+            {/* Image Display */}
+            {imageLoaded && (
+              <Image src={archetypeImage} alt="Archetype Image" />
+            )}
+          </HalfWidthDiv>
+        </FlexContainer>
+        {imageLoaded && (
+          <>
+            <ButtonContainer>
+              {/* <Button>Portal</Button> */}
+              <Button>Build</Button>
+            </ButtonContainer>
+            {showQRCode && qrCodeData && (
+              <QRScoreCard ref={qrCodeRef}>
+                <QRCode
+                  value={qrCodeData}
+                  size={128} // Adjust size as needed
+                  level={"H"} // Error correction level: 'L', 'M', 'Q', 'H'
+                  includeMargin={true}
+                />
+              </QRScoreCard>
+            )}
+
+            <ButtonContainer>
+              {/* <Button onClick={generateQRCode}>Generate QRKey</Button> */}
+              <Button onClick={generateQRCode} disabled={isQRCodeGenerating}>
+                {qrButtonLabel}
+              </Button>
+              <Button onClick={downloadQRCode}>Download</Button>
+            </ButtonContainer>
           </>
         )}
-        <Button>Genrate QRKey </Button>
       </Card>
     </>
   );

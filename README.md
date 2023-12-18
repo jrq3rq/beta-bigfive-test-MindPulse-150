@@ -34,6 +34,8 @@ Personality-Test-App
 └── (various modules)
 ```
 
+# Personality Test Application
+
 This repository contains a React-based web application designed to conduct a personality test based on the Big Five personality traits model. The application dynamically fetches questions associated with each of the five traits - Openness, Conscientiousness, Extraversion, Agreeableness, and Neuroticism - from a local API and tallies responses to present a final score.
 
 ## Features
@@ -44,19 +46,26 @@ This repository contains a React-based web application designed to conduct a per
 - **Reverse Scoring**: Certain questions are reverse scored based on the `isReverseScored` property in the API response.
 - **Progressive Questionnaire**: Users navigate through the questionnaire trait by trait, with progress indication.
 
+## Future Enhancements
+
+### Normalized Scoring
+
+We plan to add normalization of scores against a larger reference group in the future. This would allow users to see how their scores compare to a broader population. The implementation would involve:
+
+1. Sourcing normative dataset
+2. Adjusting scoring algorithm
+3. Updating result interpretation
+4. Improving UI/UX
+5. Testing and validating
+6. Addressing legal and ethical considerations
+
+Adding this feature would increase accuracy and provide better context for understanding results.
+
 ## Installation and Setup
 
-1. **Clone the Repository**: Clone this repository to your local machine using `git clone`.
-2. **Install Dependencies**:
-   ```bash
-   npm install
-   ```
-   This command installs all the necessary dependencies.
-3. **Run the Application**:
-   ```bash
-   npm start
-   ```
-   This will start the application on localhost:3000 (or your default React port).
+1. Clone the Repository
+2. Install Dependencies
+3. Run the Application
 4. **API Setup**: Ensure the local API server is running at `http://localhost:3000/bigFive/`. The application expects the API to return data in a specific format.
 
 ### API Response Format
