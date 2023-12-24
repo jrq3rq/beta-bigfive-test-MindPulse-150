@@ -26,22 +26,28 @@ const Header = styled.div`
   text-transform: uppercase;
   font-weight: bold;
   font-size: 1em;
+  padding: 10px 10px 10px 10px;
+`;
+const Header2 = styled.div`
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 1em;
   padding: 10px 10px 0px 10px;
 `;
-
 const SubHeader = styled.div`
   font-size: 0.9em;
   padding: 0px 10px 10px 10px;
 `;
 
 const ScoreCard = styled.div`
+  width: 100%;
   padding: 40px 10px;
   color: #fff;
   background-color: #282c34;
   border-radius: 10px;
   overflow-wrap: break-word; // Break long words to prevent overflow
   overflow-x: auto; // Horizontal scrollbar if necessary
-  max-height: 200px; // Set a maximum height
+
   @media (max-width: 600px) {
     font-size: 0.7em; // Smaller text on smaller screens
     padding: 20px 10px;
@@ -57,30 +63,30 @@ const ScoreParagraph = styled.p`
 `;
 
 const QRScoreCard = styled.div`
-  padding: 5px 10px 5px 10px;
+  padding: 10px 20px 10px 30px;
   background-color: transparent; // Green background: ;
   color: #fff;
 `;
 
 const Card = styled.div`
-  width: 400px;
+  width: 350px;
   @media (max-width: 600px) {
     width: 100%;
   }
 `;
 
 const ImageContainer = styled.div`
-  width: 200px;
-  height: 200px;
+  /* width: 200px; */
+  /* height: 200px; */
   margin: 0px auto;
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  @media (max-width: 600px) {
+  /* @media (max-width: 600px) {
     width: 100px;
     height: 100px;
-  }
+  } */
 `;
 
 const LoadingSpinner = styled.div`
@@ -216,16 +222,6 @@ const Button = styled.button`
   }
 `;
 
-const FlexContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const HalfWidthDiv = styled.div`
-  width: 50%;
-`;
-
 // Define a styled component for displaying error messages
 const ErrorContainer = styled.div`
   background-color: #ffcccc; // Light red background for error visibility
@@ -258,6 +254,21 @@ const StyledParagraph = styled.p`
   border-radius: 8px; // Example: Rounded corners
   max-width: 80%; // Example: Max width to control the line length
   margin: 20px auto; // Example: Center the paragraph with auto margins
+`;
+
+// Adjusting FlexContainer to initially center content
+const FlexContainer = styled.div`
+  display: flex;
+  justify-content: center; // Center the content
+  align-items: center;
+`;
+
+// Adjusting HalfWidthDiv for the QR code and score card layout
+const HalfWidthDiv = styled.div`
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  align-items: center; // Center the score card initially
 `;
 
 const traits = [
@@ -394,6 +405,15 @@ const archetypes = {
   },
 };
 
+// Utility function to shuffle an array
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
 const PersonalityTest = () => {
   const [currentTraitIndex, setCurrentTraitIndex] = useState(0);
   const [currentTrait, setCurrentTrait] = useState({});
@@ -419,25 +439,25 @@ const PersonalityTest = () => {
   const determineArchetype = (userScores) => {
     let closestMatch = null;
     let smallestDifference = Infinity;
-    let imagePath = "";
+    let archetypeDetails = {};
 
-    Object.entries(archetypes).forEach(([archetypeName, archetypeDetails]) => {
-      if (archetypeDetails.scores) {
+    Object.entries(archetypes).forEach(([archetypeName, details]) => {
+      if (details.scores) {
         let totalDifference = 0;
 
-        Object.entries(archetypeDetails.scores).forEach(([trait, score]) => {
+        Object.entries(details.scores).forEach(([trait, score]) => {
           totalDifference += Math.abs(score - userScores[trait]);
         });
 
         if (totalDifference < smallestDifference) {
           smallestDifference = totalDifference;
           closestMatch = archetypeName;
-          imagePath = archetypeDetails.imagePath;
+          archetypeDetails = { ...details }; // Copy all details
         }
       }
     });
 
-    return { name: closestMatch, imagePath };
+    return { name: closestMatch, ...archetypeDetails };
   };
 
   useEffect(() => {
@@ -453,7 +473,9 @@ const PersonalityTest = () => {
           (trait) => trait.trait === traits[currentTraitIndex]
         );
         setCurrentTrait(traitData);
-        setQuestions(traitData.questions);
+        const shuffledQuestions = shuffleArray([...traitData.questions]);
+        // setQuestions(traitData.questions);
+        setQuestions(shuffledQuestions);
       } catch (error) {
         setError(error.message);
       } finally {
@@ -533,27 +555,34 @@ const PersonalityTest = () => {
       setImageLoaded(true);
     }, 2000);
   };
-
   const generateQRCode = () => {
     setQrButtonLabel("Loading...");
     setIsQRCodeGenerating(true);
 
     setTimeout(() => {
-      // Assuming finalScores holds the final scores
-      const userScoresJSON = JSON.stringify({
-        Openness: finalScores.Openness,
-        Conscientiousness: finalScores.Conscientiousness,
-        Extraversion: finalScores.Extraversion,
-        Agreeableness: finalScores.Agreeableness,
-        Neuroticism: finalScores.Neuroticism,
+      const finalScoresData = calculateFinalScores();
+      setFinalScores(finalScoresData);
+
+      // Combine scores and archetype details
+      const archetypeMatch = determineArchetype(finalScoresData);
+      setMatchedArchetypeName(archetypeMatch.name);
+      setArchetypeImage(archetypeMatch.imagePath);
+
+      const qrData = JSON.stringify({
+        userScores: finalScoresData,
+        matchedArchetype: {
+          name: archetypeMatch.name,
+          // Add any additional details you want from archetypeMatch
+        },
       });
 
-      setQrCodeData(userScoresJSON);
-      setShowQRCode(true); // Display the QR code
-      setIsQRCodeGenerating(false); // End the loading state
-      setQrButtonLabel("Generate QRKey"); // Reset the button label
-    }, 1000); // Delay of 1 second
+      setQrCodeData(qrData);
+      setShowQRCode(true);
+      setIsQRCodeGenerating(false);
+      setQrButtonLabel("Generate QRKey");
+    }, 1000);
   };
+
   const qrCodeRef = useRef(null);
 
   const downloadQRCode = () => {
@@ -587,33 +616,18 @@ const PersonalityTest = () => {
           <IoClose size={30} /> {/* Adjust size as needed */}
         </CloseIconContainer>
         {/* Display the matched archetype name here */}
-        <Header>Gemstone</Header>
-        <SubHeader>{matchedArchetypeName}</SubHeader>
+        <Header>MindPulse-150 results:</Header>
         <FlexContainer>
-          <HalfWidthDiv>
-            {/* Scores Display */}
-            <ScoreCard>
-              {Object.entries(finalScores).map(([trait, score]) => (
-                <ScoreParagraph key={trait}>
-                  <TraitName>{trait}:</TraitName>
-                  <ScoreValue>{score}</ScoreValue>
-                </ScoreParagraph>
-              ))}
-            </ScoreCard>
-          </HalfWidthDiv>
-          <HalfWidthDiv>
-            {/* Image Display */}
-            {imageLoaded && (
-              <Image src={archetypeImage} alt="Archetype Image" />
-            )}
-          </HalfWidthDiv>
-        </FlexContainer>
-        {imageLoaded && (
-          <>
-            <ButtonContainer>
-              {/* <Button>Portal</Button> */}
-              <Button>Build</Button>
-            </ButtonContainer>
+          {/* Scores Display */}
+          <ScoreCard>
+            {Object.entries(finalScores).map(([trait, score]) => (
+              <ScoreParagraph key={trait}>
+                <TraitName>{trait}:</TraitName>
+                <ScoreValue>{score}</ScoreValue>
+              </ScoreParagraph>
+            ))}
+          </ScoreCard>
+          <ImageContainer>
             {showQRCode && qrCodeData && (
               <QRScoreCard ref={qrCodeRef}>
                 <QRCode
@@ -624,13 +638,30 @@ const PersonalityTest = () => {
                 />
               </QRScoreCard>
             )}
-
+          </ImageContainer>
+        </FlexContainer>
+        {imageLoaded && (
+          <>
             <ButtonContainer>
               {/* <Button onClick={generateQRCode}>Generate QRKey</Button> */}
               <Button onClick={generateQRCode} disabled={isQRCodeGenerating}>
                 {qrButtonLabel}
               </Button>
               <Button onClick={downloadQRCode}>Download</Button>
+            </ButtonContainer>
+            <Header2>Gemstone</Header2>
+            <ImageContainer>
+              <HalfWidthDiv>
+                {/* Image Display */}
+                {imageLoaded && (
+                  <Image src={archetypeImage} alt="Archetype Image" />
+                )}
+              </HalfWidthDiv>
+            </ImageContainer>
+            <SubHeader>{matchedArchetypeName}</SubHeader>
+            <ButtonContainer>
+              {/* <Button>Portal</Button> */}
+              <Button>Build</Button>
             </ButtonContainer>
           </>
         )}
