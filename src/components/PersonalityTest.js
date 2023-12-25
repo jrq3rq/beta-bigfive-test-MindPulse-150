@@ -3,8 +3,7 @@ import QuestionComponent from "./QuestionComponent";
 import styled from "styled-components";
 import BounceLoader from "react-spinners/MoonLoader"; // Ensure you have installed react-spinners
 import { IoClose } from "react-icons/io5"; // Import the close icon
-import { FaUserAlt } from "react-icons/fa"; // Importing a user icon as an example
-import { SlPicture } from "react-icons/sl";
+
 import QRCode from "qrcode.react";
 
 const Container = styled.div`
@@ -200,8 +199,8 @@ const Button = styled.button`
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
-  width: 100%;
   border-radius: 5px;
+  width: 100%;
   // Gives space between buttons
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -285,6 +284,7 @@ const archetypes = {
   },
   "The Rebel": {
     imagePath: "/data/rebel-stone1.png",
+    profileUrl: "https://carl-xii.web.app/rebel", // URL for the Hero profile
     scores: {
       Openness: 0.7,
       Conscientiousness: 0.3,
@@ -295,6 +295,7 @@ const archetypes = {
   },
   "The Magician": {
     imagePath: "/data/magician-stone2.png",
+    profileUrl: "https://carl-xii.web.app/magician", // URL for the Hero profile
     scores: {
       Openness: 0.8,
       Conscientiousness: 0.5,
@@ -305,6 +306,7 @@ const archetypes = {
   },
   "The Hero": {
     imagePath: "/data/hero-stone3.png",
+    profileUrl: "https://carl-xii.web.app/hero", // URL for the Hero profile
     scores: {
       Openness: 0.6,
       Conscientiousness: 0.7,
@@ -315,6 +317,7 @@ const archetypes = {
   },
   "The Creator": {
     imagePath: "/data/creator-stone4.png",
+    profileUrl: "https://carl-xii.web.app/creator", // URL for the Hero profile
     scores: {
       Openness: 0.9,
       Conscientiousness: 0.6,
@@ -325,6 +328,7 @@ const archetypes = {
   },
   "The Ruler": {
     imagePath: "/data/ruler-stone5.png",
+    profileUrl: "https://carl-xii.web.app/ruler", // URL for the Hero profile
     scores: {
       Openness: 0.5,
       Conscientiousness: 0.8,
@@ -335,6 +339,7 @@ const archetypes = {
   },
   "The Caregiver": {
     imagePath: "/data/caregiver-stone6.png",
+    profileUrl: "https://carl-xii.web.app/caregiver", // URL for the Hero profile
     scores: {
       Openness: 0.4,
       Conscientiousness: 0.7,
@@ -345,6 +350,7 @@ const archetypes = {
   },
   "The Innocent": {
     imagePath: "/data/innocent-stone7.png",
+    profileUrl: "https://carl-xii.web.app/innocent", // URL for the Hero profile
     scores: {
       Openness: 0.4,
       Conscientiousness: 0.6,
@@ -355,6 +361,7 @@ const archetypes = {
   },
   "The Sage": {
     imagePath: "/data/sage-stone8.png",
+    profileUrl: "https://carl-xii.web.app/sage", // URL for the Hero profile
     scores: {
       Openness: 0.9,
       Conscientiousness: 0.7,
@@ -365,6 +372,7 @@ const archetypes = {
   },
   "The Explorer": {
     imagePath: "/data/explorer-stone9.png",
+    profileUrl: "https://carl-xii.web.app/explorer", // URL for the Hero profile
     scores: {
       Openness: 0.9,
       Conscientiousness: 0.4,
@@ -375,6 +383,7 @@ const archetypes = {
   },
   "The Lover": {
     imagePath: "/data/lover-stone10.png",
+    profileUrl: "https://carl-xii.web.app/lover", // URL for the Hero profile
     scores: {
       Openness: 0.6,
       Conscientiousness: 0.5,
@@ -385,6 +394,7 @@ const archetypes = {
   },
   "The Joker": {
     imagePath: "/data/joker-stone11.png",
+    profileUrl: "https://carl-xii.web.app/joker", // URL for the Hero profile
     scores: {
       Openness: 0.8,
       Conscientiousness: 0.4,
@@ -395,6 +405,7 @@ const archetypes = {
   },
   "The Everyman": {
     imagePath: "/data/everyman-stone12.png",
+    profileUrl: "https://carl-xii.web.app/everyman", // URL for the Hero profile
     scores: {
       Openness: 0.5,
       Conscientiousness: 0.6,
@@ -433,6 +444,7 @@ const PersonalityTest = () => {
   const [showQRCode, setShowQRCode] = useState(false); // New state variable
   const [isQRCodeGenerating, setIsQRCodeGenerating] = useState(false);
   const [qrButtonLabel, setQrButtonLabel] = useState("Generate QRKey");
+  const [selectedArchetype, setSelectedArchetype] = useState({});
 
   const someThreshold = 0.5; // Replace 0.5 with your actual threshold value
 
@@ -464,7 +476,10 @@ const PersonalityTest = () => {
     const fetchQuestions = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch(`http://localhost:3000/bigFive/`);
+        // const response = await fetch(`http://localhost:3000/bigFive/`);
+        const response = await fetch(
+          "https://us-central1-archetype-builder-api.cloudfunctions.net/api/bigfive"
+        );
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -550,6 +565,7 @@ const PersonalityTest = () => {
       const archetypeMatch = determineArchetype(scores);
       setMatchedArchetypeName(archetypeMatch.name);
       setArchetypeImage(archetypeMatch.imagePath);
+      setSelectedArchetype(archetypes[archetypeMatch.name]);
 
       setLoading(false);
       setImageLoaded(true);
@@ -659,9 +675,18 @@ const PersonalityTest = () => {
               </HalfWidthDiv>
             </ImageContainer>
             <SubHeader>{matchedArchetypeName}</SubHeader>
+
             <ButtonContainer>
-              {/* <Button>Portal</Button> */}
-              <Button>Build</Button>
+              {selectedArchetype.profileUrl && (
+                <a
+                  href={selectedArchetype.profileUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ width: "100%" }}
+                >
+                  <Button>Build</Button>
+                </a>
+              )}
             </ButtonContainer>
           </>
         )}
