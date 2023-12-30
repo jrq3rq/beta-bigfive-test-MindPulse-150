@@ -425,6 +425,9 @@ function shuffleArray(array) {
   return array;
 }
 
+// Define the cache outside the component
+const archetypesCache = {};
+
 const PersonalityTest = () => {
   const [currentTraitIndex, setCurrentTraitIndex] = useState(0);
   const [currentTrait, setCurrentTrait] = useState({});
@@ -571,32 +574,48 @@ const PersonalityTest = () => {
       setImageLoaded(true);
     }, 2000);
   };
-  const generateQRCode = () => {
+  const generateQRCode = async () => {
     setQrButtonLabel("Loading...");
     setIsQRCodeGenerating(true);
 
-    setTimeout(() => {
-      const finalScoresData = calculateFinalScores();
-      setFinalScores(finalScoresData);
+    try {
+      const userScores = calculateFinalScores(); // User's calculated scores
+      setFinalScores(userScores);
 
-      // Combine scores and archetype details
-      const archetypeMatch = determineArchetype(finalScoresData);
-      setMatchedArchetypeName(archetypeMatch.name);
-      setArchetypeImage(archetypeMatch.imagePath);
+      const archetypeMatchName = determineArchetype(userScores);
 
-      const qrData = JSON.stringify({
-        userScores: finalScoresData,
-        matchedArchetype: {
-          name: archetypeMatch.name,
-          // Add any additional details you want from archetypeMatch
-        },
-      });
+      // Fetch archetype data
+      if (!archetypesCache[archetypeMatchName]) {
+        const response = await fetch(
+          `https://us-central1-archetype-builder-api.cloudfunctions.net/api/archetypes/${archetypeMatchName}`
+        );
+        if (!response.ok) throw new Error("Failed to fetch archetype data");
+        const archetypeData = await response.json();
+
+        // Extract necessary fields excluding scores
+        const { order, id, timestamp, name } = archetypeData;
+        const extractedData = { order, id, timestamp, name };
+
+        // Cache the extracted data
+        archetypesCache[archetypeMatchName] = extractedData;
+      }
+
+      // Combine user scores with the cached archetype data
+      const qrDataObject = {
+        ...archetypesCache[archetypeMatchName],
+        scores: userScores, // Injecting user's scores here
+      };
+
+      const qrData = JSON.stringify(qrDataObject);
 
       setQrCodeData(qrData);
       setShowQRCode(true);
+    } catch (error) {
+      console.error("Error generating QR code:", error);
+    } finally {
       setIsQRCodeGenerating(false);
       setQrButtonLabel("Generate QRKey");
-    }, 1000);
+    }
   };
 
   const qrCodeRef = useRef(null);
@@ -700,6 +719,7 @@ const PersonalityTest = () => {
       <CardHeader>
         {currentTrait.trait} {currentTraitIndex + 1} / {traits.length}
       </CardHeader>
+      <StyledParagraph>{currentTrait.description}</StyledParagraph>
       <StyledParagraph>{currentTrait.description}</StyledParagraph>
       <Overlay show={showModal} />
       <Modal show={showModal}>{modalContent}</Modal>
