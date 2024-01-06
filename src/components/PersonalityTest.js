@@ -14,6 +14,14 @@ const Container = styled.div`
   /* box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); */
 `;
 
+const HeadContainer = styled.div`
+  /* padding: 20px; */
+  display: flex; // Added for flexbox layout
+  flex-direction: column; // Children stacked vertically
+  align-items: center; // Center children horizontally
+  justify-content: center; // Center children vertically
+`;
+
 const CloseIconContainer = styled.div`
   position: absolute;
   top: 10px;
@@ -25,17 +33,45 @@ const Header = styled.div`
   text-transform: uppercase;
   font-weight: bold;
   font-size: 1em;
-  padding: 10px 10px 10px 10px;
+  color: #282c34;
+  letter-spacing: 0px;
+  position: relative; // Required for positioning the pseudo-element
+  display: inline-block; // Ensures the container fits the content
+
+  &::after {
+    content: "";
+    display: block;
+    width: 100%; // Matches the width of the text
+    height: 1px; // Thickness of the underline
+    background: #282c34; // Color of the underline
+    position: absolute;
+    left: 0;
+    bottom: -2px; // Adjust this to control the distance between text and underline
+  }
+`;
+
+const AdmissionHeader = styled.div`
+  text-transform: uppercase;
+  font-size: 0.8em;
+  color: #282c34;
+  letter-spacing: 0px;
+  position: relative; // Required for positioning the pseudo-element
+  display: inline-block; // Ensures the container fits the content
+  padding: 0px 0px 10px 0px;
+`;
+
+const AdmissionTag = styled.div`
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 0.7em;
+  color: #282c34;
+  padding: 10px 0px 0px 0px;
 `;
 const Header2 = styled.div`
   text-transform: uppercase;
   font-weight: bold;
   font-size: 1em;
   padding: 10px 10px 0px 10px;
-`;
-const SubHeader = styled.div`
-  font-size: 0.9em;
-  padding: 0px 10px 10px 10px;
 `;
 
 const ScoreCard = styled.div`
@@ -131,9 +167,11 @@ const Modal = styled.div`
     /* padding: 25px; */
   }
 `;
-const CardHeader = styled.h4`
+const CardHeader = styled.h2`
+  /* color: #f4f4f4; */
+  color: #333;
   text-transform: uppercase;
-  padding: 20px 0px 10px 0px;
+  padding: 0px 10px 0px 10px;
 `;
 
 // const Image = styled.img`
@@ -244,15 +282,44 @@ const LoadingContainer = styled.div`
   font-size: 1.2em;
 `;
 
+const SubHeader = styled.div`
+  font-size: 0.8em;
+  padding: 0px 10px 10px 10px;
+  letter-spacing: 3px;
+  /* color: #f4f4f4; */
+  color: #333;
+`;
+
+const SubSubHeader = styled.h3`
+  font-size: 0.8em;
+  padding: 10px 0px 1px 0px;
+  /* color: #f4f4f4; */
+  color: #333;
+`;
+
 const StyledParagraph = styled.p`
-  font-size: 1em; // Example: Change font size
-  color: #333; // Example: Text color
-  margin: 10px 0; // Example: Margin around the paragraph
-  line-height: 1.5; // Example: Line height for better readability
-  padding: 5px; // Example: Padding around the text
-  border-radius: 8px; // Example: Rounded corners
-  max-width: 80%; // Example: Max width to control the line length
-  margin: 20px auto; // Example: Center the paragraph with auto margins
+  /* color: #f4f4f4; */
+  padding: 0px 10px 20px 10px;
+  color: #333;
+  width: 70%;
+  @media (max-width: 600px) {
+    width: 100%;
+    padding: 10px 10px 10px 10px;
+  }
+`;
+const Subheader = styled.h3`
+  /* text-transform: uppercase; */
+  font-size: 1em;
+  padding: 10px 10px 0px 10px;
+  color: #333;
+`;
+const SubheaderDesc = styled.p`
+  color: #333;
+  width: 70%;
+  @media (max-width: 600px) {
+    width: 100%;
+    padding: 10px 10px 10px 10px;
+  }
 `;
 
 // Adjusting FlexContainer to initially center content
@@ -614,10 +681,9 @@ const PersonalityTest = () => {
       console.error("Error generating QR code:", error);
     } finally {
       setIsQRCodeGenerating(false);
-      setQrButtonLabel("Generate QRKey");
+      setQrButtonLabel("Generate QR Key");
     }
   };
-
   const qrCodeRef = useRef(null);
 
   const downloadQRCode = () => {
@@ -628,7 +694,7 @@ const PersonalityTest = () => {
         const image = canvas.toDataURL("image/png");
         const link = document.createElement("a");
         link.href = image;
-        link.download = "QRCode.png";
+        link.download = "Archetype-Student-ID.png";
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -651,7 +717,8 @@ const PersonalityTest = () => {
           <IoClose size={30} /> {/* Adjust size as needed */}
         </CloseIconContainer>
         {/* Display the matched archetype name here */}
-        <Header>MindPulse-150 results:</Header>
+        <Header>The Archetype Academy</Header>
+        <AdmissionHeader>MindPulse-150 results: </AdmissionHeader>
         <FlexContainer>
           {/* Scores Display */}
           <ScoreCard>
@@ -677,14 +744,18 @@ const PersonalityTest = () => {
         </FlexContainer>
         {imageLoaded && (
           <>
+            <AdmissionTag>Admissions</AdmissionTag>
+
             <ButtonContainer>
               {/* <Button onClick={generateQRCode}>Generate QRKey</Button> */}
               <Button onClick={generateQRCode} disabled={isQRCodeGenerating}>
                 {qrButtonLabel}
               </Button>
+
               <Button onClick={downloadQRCode}>Download</Button>
             </ButtonContainer>
             <Header2>Gemstone</Header2>
+            <SubHeader>{matchedArchetypeName}</SubHeader>
             <ImageContainer>
               <HalfWidthDiv>
                 {/* Image Display */}
@@ -693,8 +764,6 @@ const PersonalityTest = () => {
                 )}
               </HalfWidthDiv>
             </ImageContainer>
-            <SubHeader>{matchedArchetypeName}</SubHeader>
-
             <ButtonContainer>
               {selectedArchetype.profileUrl && (
                 <a
@@ -716,11 +785,15 @@ const PersonalityTest = () => {
     <Container>
       {/* <h2>{currentTrait.trait}</h2> */}
       {/* <p>{currentTrait.description}</p> */}
-      <CardHeader>
-        {currentTrait.trait} {currentTraitIndex + 1} / {traits.length}
-      </CardHeader>
-      <StyledParagraph>{currentTrait.description}</StyledParagraph>
-      <StyledParagraph>{currentTrait.description}</StyledParagraph>
+      <HeadContainer>
+        <SubSubHeader>
+          Trait {currentTraitIndex + 1} of {traits.length}
+        </SubSubHeader>
+        <CardHeader>{currentTrait.trait}</CardHeader>
+        <StyledParagraph>{currentTrait.description}</StyledParagraph>
+        <Subheader>{currentTrait.subheader}</Subheader>
+        <SubheaderDesc>{currentTrait.subheaderDescription}</SubheaderDesc>
+      </HeadContainer>
       <Overlay show={showModal} />
       <Modal show={showModal}>{modalContent}</Modal>
       {questions.map((question, index) => {

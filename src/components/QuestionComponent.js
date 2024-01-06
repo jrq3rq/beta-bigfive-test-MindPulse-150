@@ -63,7 +63,7 @@ const QuestionComponent = ({
   name,
   isAnswered, // Add this prop
 }) => {
-  const questionStyle = isAnswered ? {} : { backgroundColor: "#ffcccc" }; // Highlight unanswered questions
+  const questionStyle = isAnswered ? {} : { backgroundColor: "#c6ffd5" }; // Highlight unanswered questions
 
   const likertOptions = [
     { text: "Very Inaccurate", value: 0 },
