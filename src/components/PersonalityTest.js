@@ -29,35 +29,52 @@ const CloseIconContainer = styled.div`
   cursor: pointer;
 `;
 
+const BorderBox = styled.div`
+  /* border: 0.8px solid #282c34; */
+  background-color: #282c34;
+  /* background-color: #f4f4f4; */
+  border-radius: 8px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 20px 10px 20px;
+  margin: 10px 0px 0px 0px;
+`;
+
 const Header = styled.div`
   text-transform: uppercase;
-  font-weight: bold;
+  font-family: "Orbitron", sans-serif;
+  font-weight: 900;
   font-size: 1em;
-  color: #282c34;
+  color: #f4f4f4;
   letter-spacing: 0px;
   position: relative; // Required for positioning the pseudo-element
   display: inline-block; // Ensures the container fits the content
-
-  &::after {
+  padding: 5px 5px 5px 5px;
+  /* &::after {
     content: "";
     display: block;
     width: 100%; // Matches the width of the text
-    height: 1px; // Thickness of the underline
+    height: 0.5px; // Thickness of the underline
     background: #282c34; // Color of the underline
     position: absolute;
     left: 0;
-    bottom: -2px; // Adjust this to control the distance between text and underline
-  }
+    bottom: -1px; // Adjust this to control the distance between text and underline
+  } */
 `;
 
 const AdmissionHeader = styled.div`
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
+  /* font-family: "Orbitron", sans-serif;
+  font-weight: 100; */
   font-size: 0.8em;
   color: #282c34;
+  /* color: #f4f4f4; */
   letter-spacing: 0px;
-  position: relative; // Required for positioning the pseudo-element
-  display: inline-block; // Ensures the container fits the content
-  padding: 0px 0px 10px 0px;
+  position: relative;
+  display: inline-block;
+  padding: 10px 0px 10px 0px;
+  text-align: center; /* Center-align the text within this element */
 `;
 
 const AdmissionTag = styled.div`
@@ -66,7 +83,9 @@ const AdmissionTag = styled.div`
   font-size: 0.7em;
   color: #282c34;
   padding: 10px 0px 0px 0px;
+  text-align: center; /* Center-align the text within this element */
 `;
+
 const Header2 = styled.div`
   text-transform: uppercase;
   font-weight: bold;
@@ -76,29 +95,34 @@ const Header2 = styled.div`
 
 const ScoreCard = styled.div`
   width: 100%;
-  padding: 40px 10px;
+  padding: 5px 20px 5px 20px;
+  /* padding: 0px 5px 0px 5px; */
   color: #fff;
+  /* background-color: #f4f4f4; */
   background-color: #282c34;
-  border-radius: 10px;
+  border-radius: 8px;
   overflow-wrap: break-word; // Break long words to prevent overflow
   overflow-x: auto; // Horizontal scrollbar if necessary
 
   @media (max-width: 600px) {
     font-size: 0.7em; // Smaller text on smaller screens
-    padding: 20px 10px;
+    padding: 5px 10px 5px 10px;
   }
 `;
 const ScoreParagraph = styled.p`
   font-size: 0.8em;
-  color: #333;
-  margin: 5px 0;
+  margin: 0.5px 0px 0.5px 0px;
+  padding: 5px 5px 5px 5px;
+  background-color: #fff;
+  /* background-color: #282c34; */
   white-space: nowrap; // Prevents text from wrapping to the next line
   overflow: hidden; // Hides overflow
   text-overflow: ellipsis; // Adds ellipsis to overflowing text
+  /* border-radius: 4px; */
 `;
 
 const QRScoreCard = styled.div`
-  padding: 10px 20px 10px 30px;
+  padding: 10px 20px 5px 20px;
   background-color: transparent; // Green background: ;
   color: #fff;
 `;
@@ -207,8 +231,10 @@ const StyledButton = styled.button`
 
 const TraitName = styled.span`
   font-size: 1em; // Adjust the font size as needed
-  color: #fff; // Adjust the text color as needed
+  /* color: #fff; // Adjust the text color as needed */
+  color: #282c34; // Adjust the text color as needed
   font-weight: bold; // Make the trait name bold
+  padding: 10px 0px 10px 10px;
   @media (max-width: 600px) {
     font-size: 0.9em; // Adjust the font size as needed
   }
@@ -216,6 +242,7 @@ const TraitName = styled.span`
 
 const ScoreValue = styled.span`
   font-size: 1em; // Slightly smaller font size for the score
+  font-weight: bold;
   color: #e05063; // Different color for the score
   margin-left: 2px; // Space between the trait name and score
 `;
@@ -224,7 +251,7 @@ const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 10px 0px 10px 0px; // Adjust as needed
+  padding: 10px 0px 0px 0px;
   gap: 10px;
 `;
 
@@ -296,7 +323,6 @@ const SubSubHeader = styled.h3`
   /* color: #f4f4f4; */
   color: #333;
 `;
-
 const StyledParagraph = styled.p`
   /* color: #f4f4f4; */
   padding: 0px 10px 20px 10px;
@@ -717,7 +743,9 @@ const PersonalityTest = () => {
           <IoClose size={30} /> {/* Adjust size as needed */}
         </CloseIconContainer>
         {/* Display the matched archetype name here */}
-        <Header>The Archetype Academy</Header>
+        <BorderBox>
+          <Header>The Archetype Academy</Header>
+        </BorderBox>
         <AdmissionHeader>MindPulse-150 results: </AdmissionHeader>
         <FlexContainer>
           {/* Scores Display */}
@@ -744,7 +772,7 @@ const PersonalityTest = () => {
         </FlexContainer>
         {imageLoaded && (
           <>
-            <AdmissionTag>Admissions</AdmissionTag>
+            {/* <AdmissionHeader>Admissions</AdmissionHeader> */}
 
             <ButtonContainer>
               {/* <Button onClick={generateQRCode}>Generate QRKey</Button> */}
