@@ -572,10 +572,10 @@ const PersonalityTest = () => {
     const fetchQuestions = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch(`http://localhost:3000/bigFive/`);
-        // const response = await fetch(
-        //   "https://us-central1-archetype-builder-api.cloudfunctions.net/api/bigfive"
-        // );
+        // const response = await fetch(`http://localhost:3000/bigFive/`);
+        const response = await fetch(
+          "https://us-central1-archetype-builder-api.cloudfunctions.net/api/bigfive"
+        );
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
