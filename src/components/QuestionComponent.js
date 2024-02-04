@@ -4,6 +4,8 @@ import styled from "styled-components";
 const QuestionContainer = styled.div`
   margin: 20px 0px 20px 0px;
   padding: 20px;
+  /* border: 1px solid #ccc; */
+  border-radius: 5px;
   /* box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); */
   @media (max-width: 600px) {
     padding: 0px;
@@ -13,9 +15,13 @@ const QuestionContainer = styled.div`
 const QuestionText = styled.p`
   font-size: 1.2em;
   color: #fff;
+  border-radius: 5px;
   /* color: #333; */
   padding: 10px;
   background-color: #282c34;
+  @media (max-width: 600px) {
+    border-radius: 5px 5px 0px 0px;
+  }
 `;
 
 const LikertScaleContainer = styled.div`
@@ -33,7 +39,6 @@ const OptionContainer = styled.div`
   display: flex;
   flex-direction: column; // Keep radio button above the label
   align-items: center;
-  margin-bottom: 10px;
   margin: 10px 20px 0px 20px;
   cursor: pointer; // Makes the entire pink area clickable
   @media (min-width: 601px) {

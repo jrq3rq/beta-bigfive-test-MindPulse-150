@@ -8,6 +8,8 @@ import QRCode from "qrcode.react";
 
 const Container = styled.div`
   /* background-color: rgb(255, 192, 203); */
+  border: 1px solid #ccc;
+  border-radius: 5px;
   background-color: #f4f4f4;
   margin: 20px;
   padding: 20px;
@@ -215,7 +217,7 @@ const StyledButton = styled.button`
   font-size: 16px;
   margin: 4px 2px;
   cursor: pointer;
-  /* border-radius: 4px; */
+  border-radius: 5px;
   transition: background-color 0.3s ease;
 
   &:hover {
