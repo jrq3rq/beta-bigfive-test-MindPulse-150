@@ -3,6 +3,7 @@ import QuestionComponent from "./QuestionComponent";
 import styled from "styled-components";
 import BounceLoader from "react-spinners/MoonLoader"; // Ensure you have installed react-spinners
 import { IoClose } from "react-icons/io5"; // Import the close icon
+import { v4 as uuidv4 } from "uuid";
 
 import QRCode from "qrcode.react";
 
@@ -79,20 +80,43 @@ const AdmissionHeader = styled.div`
   text-align: center; /* Center-align the text within this element */
 `;
 
-const AdmissionTag = styled.div`
-  text-transform: uppercase;
-  font-weight: bold;
-  font-size: 0.7em;
-  color: #282c34;
-  padding: 10px 0px 0px 0px;
-  text-align: center; /* Center-align the text within this element */
-`;
+// const AdmissionTag = styled.div`
+//   text-transform: uppercase;
+//   font-weight: bold;
+//   font-size: 0.7em;
+//   color: #282c34;
+//   padding: 10px 0px 0px 0px;
+//   text-align: center; /* Center-align the text within this element */
+// `;
 
 const Header2 = styled.div`
   text-transform: uppercase;
   font-weight: bold;
   font-size: 1em;
   padding: 10px 10px 0px 10px;
+`;
+
+const CompHeader = styled.div`
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 0.9em;
+  padding: 10px 10px 0px 10px;
+`;
+
+const CompSubHeader = styled.div`
+  font-size: 0.7em;
+  padding: 0px 10px 10px 10px;
+  letter-spacing: 3px;
+  /* color: #f4f4f4; */
+  color: #333;
+`;
+
+const CompDesc = styled.div`
+  font-size: 0.4em;
+  padding: 0px 10px 10px 10px;
+  letter-spacing: 3px;
+  /* color: #f4f4f4; */
+  color: #333;
 `;
 
 const ScoreCard = styled.div`
@@ -111,6 +135,7 @@ const ScoreCard = styled.div`
     padding: 5px 10px 5px 10px;
   }
 `;
+
 const ScoreParagraph = styled.p`
   font-size: 0.8em;
   margin: 0.5px 0px 0.5px 0px;
@@ -312,8 +337,8 @@ const LoadingContainer = styled.div`
 `;
 
 const SubHeader = styled.div`
-  font-size: 0.8em;
-  padding: 0px 10px 10px 10px;
+  font-size: 0.7em;
+  padding: 0px 0px 10px 0px;
   letter-spacing: 3px;
   /* color: #f4f4f4; */
   color: #333;
@@ -365,6 +390,30 @@ const HalfWidthDiv = styled.div`
   align-items: center; // Center the score card initially
 `;
 
+const FlexRow = styled.div`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 10px;
+`;
+
+const ArchetypeCard = styled.div`
+  /* background: #f8f8f8; */
+  border-radius: 10px;
+  border: 2px solid #282c34;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  margin: 10px;
+  width: 45%; // Each card takes almost half of the container width
+  text-align: center;
+`;
+
+const ArchetypeImage = styled.img`
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+`;
+
 const traits = [
   "Openness",
   "Conscientiousness",
@@ -372,12 +421,14 @@ const traits = [
   "Agreeableness",
   "Neuroticism",
 ];
+
 const archetypes = {
   Default: {
     imagePath: "/data/Black13long.png",
     scores: null,
   },
   "The Rebel": {
+    order: "Ego",
     imagePath: "/data/rebel-stone1.png",
     profileUrl: "https://carl-xii.web.app/rebel", // URL for the Hero profile
     scores: {
@@ -387,8 +438,13 @@ const archetypes = {
       Agreeableness: 0.2,
       Neuroticism: 0.5,
     },
+    complimentaryArchetype: "The Lover",
+    complimentaryArchetypeImagePath: "/data/lover-stone10.png",
+    complimentaryArchetypeReasoning:
+      "The Rebel's disruptive and unconventional approach can be tempered by the Diplomat's ability to build relationships and find common ground to create positive change.",
   },
   "The Magician": {
+    order: "Ego",
     imagePath: "/data/magician-stone2.png",
     profileUrl: "https://carl-xii.web.app/magician", // URL for the Hero profile
     scores: {
@@ -398,8 +454,13 @@ const archetypes = {
       Agreeableness: 0.4,
       Neuroticism: 0.3,
     },
+    complimentaryArchetype: "The Hero",
+    complimentaryArchetypeImagePath: "/data/hero-stone3.png",
+    complimentaryArchetypeReasoning:
+      "The Magician's ability to transform challenges into opportunities can be supported by the Hero's courage and determination to take action and lead the way.",
   },
   "The Hero": {
+    order: "Ego",
     imagePath: "/data/hero-stone3.png",
     profileUrl: "https://carl-xii.web.app/hero", // URL for the Hero profile
     scores: {
@@ -409,8 +470,13 @@ const archetypes = {
       Agreeableness: 0.6,
       Neuroticism: 0.4,
     },
+    complimentaryArchetype: "The Everyman",
+    complimentaryArchetypeImagePath: "/data/everyman-stone12.png",
+    complimentaryArchetypeReasoning:
+      "The Hero's bold leadership and determination can be enhanced by the Collaborator's ability to build strong teams and foster a sense of unity and purpose.",
   },
   "The Creator": {
+    order: "Personal",
     imagePath: "/data/creator-stone4.png",
     profileUrl: "https://carl-xii.web.app/creator", // URL for the Hero profile
     scores: {
@@ -420,8 +486,13 @@ const archetypes = {
       Agreeableness: 0.5,
       Neuroticism: 0.3,
     },
+    complimentaryArchetype: "The Sage",
+    complimentaryArchetypeImagePath: "/data/sage-stone8.png",
+    complimentaryArchetypeReasoning:
+      "The Creator's creativity and vision can be supported by the Analyst's strategic thinking and data-driven insights to create viable and impactful innovations.",
   },
   "The Ruler": {
+    order: "Personal",
     imagePath: "/data/ruler-stone5.png",
     profileUrl: "https://carl-xii.web.app/ruler", // URL for the Hero profile
     scores: {
@@ -431,8 +502,13 @@ const archetypes = {
       Agreeableness: 0.3,
       Neuroticism: 0.4,
     },
+    complimentaryArchetype: "The Caregiver",
+    complimentaryArchetypeImagePath: "/data/caregiver-stone6.png",
+    complimentaryArchetypeReasoning:
+      "The Ruler's structure and stability can be balanced by the Caregiver's empathy and concern for the well-being of customers and employees.",
   },
   "The Caregiver": {
+    order: "Personal",
     imagePath: "/data/caregiver-stone6.png",
     profileUrl: "https://carl-xii.web.app/caregiver", // URL for the Hero profile
     scores: {
@@ -442,8 +518,13 @@ const archetypes = {
       Agreeableness: 0.8,
       Neuroticism: 0.5,
     },
+    complimentaryArchetype: "The Rebel",
+    complimentaryArchetypeImagePath: "/data/rebel-stone1.png",
+    complimentaryArchetypeReasoning:
+      "The Caregiver's nurturing and supportive nature can be complemented by the Maverick's ability to challenge the status quo and push for necessary changes to better serve customers and employees.",
   },
   "The Innocent": {
+    order: "Transpersonal",
     imagePath: "/data/innocent-stone7.png",
     profileUrl: "https://carl-xii.web.app/innocent", // URL for the Hero profile
     scores: {
@@ -453,8 +534,13 @@ const archetypes = {
       Agreeableness: 0.7,
       Neuroticism: 0.3,
     },
+    complimentaryArchetype: "The Ruler",
+    complimentaryArchetypeImagePath: "/data/ruler-stone5.png",
+    complimentaryArchetypeReasoning:
+      "The Innocent's optimism and trust can be grounded by the Ruler's structure, stability, and ability to create order and security within the organization.",
   },
   "The Sage": {
+    order: "Transpersonal",
     imagePath: "/data/sage-stone8.png",
     profileUrl: "https://carl-xii.web.app/sage", // URL for the Hero profile
     scores: {
@@ -464,8 +550,13 @@ const archetypes = {
       Agreeableness: 0.6,
       Neuroticism: 0.2,
     },
+    complimentaryArchetype: "The Creator",
+    complimentaryArchetypeImagePath: "/data/creator-stone4.png",
+    complimentaryArchetypeReasoning:
+      "The Sage's wisdom and strategic thinking can provide a solid foundation for the Innovator's creative ideas and visions to flourish.",
   },
   "The Explorer": {
+    order: "Transpersonal",
     imagePath: "/data/explorer-stone9.png",
     profileUrl: "https://carl-xii.web.app/explorer", // URL for the Hero profile
     scores: {
@@ -475,8 +566,13 @@ const archetypes = {
       Agreeableness: 0.5,
       Neuroticism: 0.4,
     },
+    complimentaryArchetype: "The Magician",
+    complimentaryArchetypeImagePath: "/data/magician-stone2.png",
+    complimentaryArchetypeReasoning:
+      "The Explorer's adventurous spirit and willingness to take risks can be guided by the Visionary's ability to see the big picture and transform challenges into opportunities.",
   },
   "The Lover": {
+    order: "Collective",
     imagePath: "/data/lover-stone10.png",
     profileUrl: "https://carl-xii.web.app/lover", // URL for the Hero profile
     scores: {
@@ -486,8 +582,13 @@ const archetypes = {
       Agreeableness: 0.8,
       Neuroticism: 0.4,
     },
+    complimentaryArchetype: "The Explorer",
+    complimentaryArchetypeImagePath: "/data/explorer-stone9.png",
+    complimentaryArchetypeReasoning:
+      "The Lover's ability to build relationships and create harmony can be complemented by the Explorer's willingness to venture into new markets and seek out new opportunities.",
   },
   "The Joker": {
+    order: "Collective",
     imagePath: "/data/joker-stone11.png",
     profileUrl: "https://carl-xii.web.app/joker", // URL for the Hero profile
     scores: {
@@ -497,8 +598,13 @@ const archetypes = {
       Agreeableness: 0.3,
       Neuroticism: 0.6,
     },
+    complimentaryArchetype: "The Innocent",
+    complimentaryArchetypeImagePath: "/data/innocent-stone7.png",
+    complimentaryArchetypeReasoning:
+      "The Joker's humor and ability to bring joy can be grounded by the Innocent's sincerity and authenticity, creating a positive and engaging brand experience.",
   },
   "The Everyman": {
+    order: "Collective",
     imagePath: "/data/everyman-stone12.png",
     profileUrl: "https://carl-xii.web.app/everyman", // URL for the Hero profile
     scores: {
@@ -508,6 +614,10 @@ const archetypes = {
       Agreeableness: 0.7,
       Neuroticism: 0.4,
     },
+    complimentaryArchetype: "The Joker",
+    complimentaryArchetypeImagePath: "/data/joker-stone11.png",
+    complimentaryArchetypeReasoning:
+      "The Everyman's relatability and down-to-earth nature can be complemented by the Entertainer's ability to bring joy, humor, and a positive atmosphere to the workplace.",
   },
 };
 
@@ -543,6 +653,7 @@ const PersonalityTest = () => {
   const [isQRCodeGenerating, setIsQRCodeGenerating] = useState(false);
   const [qrButtonLabel, setQrButtonLabel] = useState("Generate QRKey");
   const [selectedArchetype, setSelectedArchetype] = useState({});
+  const [complementaryArchetype, setComplementaryArchetype] = useState({});
 
   const someThreshold = 0.5; // Replace 0.5 with your actual threshold value
 
@@ -662,8 +773,26 @@ const PersonalityTest = () => {
 
       const archetypeMatch = determineArchetype(scores);
       setMatchedArchetypeName(archetypeMatch.name);
-      setArchetypeImage(archetypeMatch.imagePath);
       setSelectedArchetype(archetypes[archetypeMatch.name]);
+
+      // Correctly fetching complimentary archetype information
+      const compArchetypeInfo =
+        archetypes[archetypeMatch.name]?.complimentaryArchetype;
+      if (compArchetypeInfo) {
+        const compArchetype = archetypes[compArchetypeInfo];
+        setComplementaryArchetype({
+          name: compArchetypeInfo,
+          imagePath: compArchetype.imagePath, // This should refer to the complementary archetype's image
+          reasoning: compArchetype.complimentaryArchetypeReasoning,
+        });
+      } else {
+        // Handle cases with no complimentary archetype properly
+        setComplementaryArchetype({
+          name: "",
+          imagePath: "",
+          reasoning: "",
+        });
+      }
 
       setLoading(false);
       setImageLoaded(true);
@@ -674,39 +803,31 @@ const PersonalityTest = () => {
     setIsQRCodeGenerating(true);
 
     try {
-      const userScores = calculateFinalScores(); // User's calculated scores
+      const userScores = calculateFinalScores();
       setFinalScores(userScores);
 
-      const archetypeMatchName = determineArchetype(userScores);
+      const archetypeMatchResult = determineArchetype(userScores);
 
-      // Fetch archetype data
-      if (!archetypesCache[archetypeMatchName]) {
-        const response = await fetch(
-          `https://us-central1-archetype-builder-api.cloudfunctions.net/api/archetypes/${archetypeMatchName}`
-        );
-        if (!response.ok) throw new Error("Failed to fetch archetype data");
-        const archetypeData = await response.json();
+      // Use the 'order' from the matched archetype (ensure 'order' is included in your archetype data)
+      const archetypeOrder = archetypeMatchResult.order;
 
-        // Extract necessary fields excluding scores
-        const { order, id, timestamp, name } = archetypeData;
-        const extractedData = { order, id, timestamp, name };
+      // Generate a UUID for a truly unique ID
+      const uniqueId = uuidv4();
 
-        // Cache the extracted data
-        archetypesCache[archetypeMatchName] = extractedData;
-      }
-
-      // Combine user scores with the cached archetype data
       const qrDataObject = {
-        ...archetypesCache[archetypeMatchName],
-        scores: userScores, // Injecting user's scores here
+        order: archetypeOrder, // Use the order from the matched archetype
+        id: uniqueId, // UUID for each QR code generation
+        timestamp: new Date().toISOString(),
+        name: archetypeMatchResult.name, // Use the matched archetype name
+        scores: userScores,
       };
 
       const qrData = JSON.stringify(qrDataObject);
-
       setQrCodeData(qrData);
       setShowQRCode(true);
     } catch (error) {
       console.error("Error generating QR code:", error);
+      setShowQRCode(false);
     } finally {
       setIsQRCodeGenerating(false);
       setQrButtonLabel("Generate QR Key");
@@ -784,16 +905,26 @@ const PersonalityTest = () => {
 
               <Button onClick={downloadQRCode}>Download</Button>
             </ButtonContainer>
-            <Header2>Gemstone</Header2>
-            <SubHeader>{matchedArchetypeName}</SubHeader>
-            <ImageContainer>
-              <HalfWidthDiv>
-                {/* Image Display */}
-                {imageLoaded && (
-                  <Image src={archetypeImage} alt="Archetype Image" />
-                )}
-              </HalfWidthDiv>
-            </ImageContainer>
+            <FlexRow>
+              <ArchetypeCard>
+                <Header2>Gemstone</Header2>
+                <SubHeader>{matchedArchetypeName}</SubHeader>
+                <ArchetypeImage
+                  src={selectedArchetype.imagePath} // Correctly reference state variable
+                  alt="Matching Archetype"
+                />
+              </ArchetypeCard>
+              <ArchetypeCard>
+                <ArchetypeImage
+                  src={complementaryArchetype.imagePath}
+                  alt="Complementary Archetype"
+                />
+                <Header2>Duality</Header2>
+                <CompSubHeader>{complementaryArchetype.name}</CompSubHeader>
+                {/* <CompDesc>{complementaryArchetype.reasoning}</CompDesc> */}
+              </ArchetypeCard>
+            </FlexRow>
+
             <ButtonContainer>
               {selectedArchetype.profileUrl && (
                 <a
