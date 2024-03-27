@@ -28,7 +28,6 @@ const LikertScaleContainer = styled.div`
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap; // Allow wrapping for smaller screens
-
   @media (max-width: 600px) {
     flex-direction: column; // Stack vertically on mobile
     align-items: center;
@@ -68,7 +67,9 @@ const QuestionComponent = ({
   name,
   isAnswered, // Add this prop
 }) => {
-  const questionStyle = isAnswered ? {} : { backgroundColor: "#c6ffd5" }; // Highlight unanswered questions
+  const questionStyle = isAnswered
+    ? { border: "1px solid transparent" }
+    : { backgroundColor: "#c6ffd5", border: "1px solid #ccc" }; // Highlight unanswered questions
 
   const likertOptions = [
     { text: "Very Inaccurate", value: 0 },

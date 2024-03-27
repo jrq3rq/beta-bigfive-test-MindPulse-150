@@ -282,6 +282,38 @@ const ButtonContainer = styled.div`
   gap: 10px;
 `;
 
+const BuildButton = styled.button`
+  background-color: #282c34;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 5px;
+  width: 100%;
+  margin-bottom: 10px;
+  // Gives space between buttons
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #666;
+  }
+
+  &:disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 600px) {
+    padding: 7px 14px; // 30% smaller padding
+    font-size: 10px; // Slightly smaller font size
+  }
+`;
+
 const Button = styled.button`
   background-color: #282c34;
   border: none;
@@ -317,10 +349,11 @@ const Button = styled.button`
 const ErrorContainer = styled.div`
   background-color: #ffcccc; // Light red background for error visibility
   color: #cc0000; // Dark red color for error text
+  border-bottom: 1px solid #ccc;
   padding: 20px;
   margin: 0px 0;
-  border-radius: 8px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  /* border-radius: 8px; */
+  /* box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); */
   text-align: center;
   font-size: 1.2em;
 `;
@@ -330,8 +363,9 @@ const LoadingContainer = styled.div`
   color: #008000; // Dark green color for text
   padding: 20px;
   margin: 0px 0;
-  border-radius: 8px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  /* border-radius: 8px; */
+  border-bottom: 1px solid #ccc;
+  /* box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); */
   text-align: center;
   font-size: 1.2em;
 `;
@@ -654,6 +688,11 @@ const PersonalityTest = () => {
   const [qrButtonLabel, setQrButtonLabel] = useState("Generate QRKey");
   const [selectedArchetype, setSelectedArchetype] = useState({});
   const [complementaryArchetype, setComplementaryArchetype] = useState({});
+  const [qrCodeInfo, setQrCodeInfo] = useState({
+    uuid: null,
+    timestamp: null,
+    scores: null,
+  });
 
   const someThreshold = 0.5; // Replace 0.5 with your actual threshold value
 
@@ -804,21 +843,30 @@ const PersonalityTest = () => {
 
     try {
       const userScores = calculateFinalScores();
-      setFinalScores(userScores);
 
-      const archetypeMatchResult = determineArchetype(userScores);
+      // Check if the current scores match the last generated scores
+      if (JSON.stringify(userScores) !== JSON.stringify(qrCodeInfo.scores)) {
+        // Scores have changed, generate new UUID and timestamp
+        const newUuid = uuidv4();
+        const newTimestamp = new Date().toISOString();
 
-      // Use the 'order' from the matched archetype (ensure 'order' is included in your archetype data)
-      const archetypeOrder = archetypeMatchResult.order;
+        // Update state with new UUID, timestamp, and scores
+        setQrCodeInfo({
+          uuid: newUuid,
+          timestamp: newTimestamp,
+          scores: userScores,
+        });
 
-      // Generate a UUID for a truly unique ID
-      const uniqueId = uuidv4();
+        // Update final scores state
+        setFinalScores(userScores);
+      }
 
+      // Regardless of whether the scores have changed, use the cached UUID and timestamp
       const qrDataObject = {
-        order: archetypeOrder, // Use the order from the matched archetype
-        id: uniqueId, // UUID for each QR code generation
-        timestamp: new Date().toISOString(),
-        name: archetypeMatchResult.name, // Use the matched archetype name
+        order: archetypes[matchedArchetypeName]?.order, // Adjusted to use matched archetype's order
+        id: qrCodeInfo.uuid,
+        timestamp: qrCodeInfo.timestamp,
+        name: matchedArchetypeName,
         scores: userScores,
       };
 
@@ -833,6 +881,7 @@ const PersonalityTest = () => {
       setQrButtonLabel("Generate QR Key");
     }
   };
+
   const qrCodeRef = useRef(null);
 
   const downloadQRCode = () => {
@@ -843,7 +892,7 @@ const PersonalityTest = () => {
         const image = canvas.toDataURL("image/png");
         const link = document.createElement("a");
         link.href = image;
-        link.download = "Archetype-Student-ID.png";
+        link.download = "ArchetypeAcademy-QRCode.png"; // Set the download filename
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -882,12 +931,13 @@ const PersonalityTest = () => {
           </ScoreCard>
           <ImageContainer>
             {showQRCode && qrCodeData && (
-              <QRScoreCard ref={qrCodeRef}>
+              <QRScoreCard>
                 <QRCode
+                  ref={qrCodeRef}
                   value={qrCodeData}
-                  size={128} // Adjust size as needed
-                  level={"H"} // Error correction level: 'L', 'M', 'Q', 'H'
-                  includeMargin={true}
+                  size={128} // example size
+                  level="H" // example error correction level
+                  includeMargin={true} // example margin inclusion
                 />
               </QRScoreCard>
             )}
@@ -898,12 +948,10 @@ const PersonalityTest = () => {
             {/* <AdmissionHeader>Admissions</AdmissionHeader> */}
 
             <ButtonContainer>
-              {/* <Button onClick={generateQRCode}>Generate QRKey</Button> */}
               <Button onClick={generateQRCode} disabled={isQRCodeGenerating}>
                 {qrButtonLabel}
               </Button>
-
-              <Button onClick={downloadQRCode}>Download</Button>
+              {/* <Button onClick={downloadQRCode}>Download</Button> */}
             </ButtonContainer>
             <FlexRow>
               <ArchetypeCard>
@@ -933,7 +981,7 @@ const PersonalityTest = () => {
                   rel="noopener noreferrer"
                   style={{ width: "100%" }}
                 >
-                  <Button>Build</Button>
+                  <BuildButton>Build</BuildButton>
                 </a>
               )}
             </ButtonContainer>
