@@ -4,6 +4,7 @@ import styled from "styled-components";
 import BounceLoader from "react-spinners/MoonLoader"; // Ensure you have installed react-spinners
 import { IoClose } from "react-icons/io5"; // Import the close icon
 import { v4 as uuidv4 } from "uuid";
+import SquareLOGO from "../images/SQUARE.png";
 
 import QRCode from "qrcode.react";
 
@@ -32,7 +33,7 @@ const CloseIconContainer = styled.div`
   cursor: pointer;
 `;
 
-const BorderBox = styled.div`
+const ImageBox = styled.div`
   /* border: 0.8px solid #282c34; */
   background-color: #282c34;
   /* background-color: #f4f4f4; */
@@ -40,8 +41,6 @@ const BorderBox = styled.div`
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  padding: 10px 20px 10px 20px;
-  margin: 10px 0px 0px 0px;
 `;
 
 const Header = styled.div`
@@ -49,21 +48,12 @@ const Header = styled.div`
   font-family: "Orbitron", sans-serif;
   font-weight: 900;
   font-size: 1em;
-  color: #f4f4f4;
+  color: #000000;
+  /* color: #f4f4f4; */
   letter-spacing: 0px;
   position: relative; // Required for positioning the pseudo-element
   display: inline-block; // Ensures the container fits the content
   padding: 5px 5px 5px 5px;
-  /* &::after {
-    content: "";
-    display: block;
-    width: 100%; // Matches the width of the text
-    height: 0.5px; // Thickness of the underline
-    background: #282c34; // Color of the underline
-    position: absolute;
-    left: 0;
-    bottom: -1px; // Adjust this to control the distance between text and underline
-  } */
 `;
 
 const AdmissionHeader = styled.div`
@@ -121,7 +111,9 @@ const CompDesc = styled.div`
 
 const ScoreCard = styled.div`
   width: 100%;
-  padding: 5px 20px 5px 20px;
+  /* padding: 5px 5px 5px 5px; */
+  border: 2px solid #282c34;
+
   /* padding: 0px 5px 0px 5px; */
   color: #fff;
   /* background-color: #f4f4f4; */
@@ -141,6 +133,7 @@ const ScoreParagraph = styled.p`
   margin: 0.5px 0px 0.5px 0px;
   padding: 5px 5px 5px 5px;
   background-color: #fff;
+  line-height: 16px;
   /* background-color: #282c34; */
   white-space: nowrap; // Prevents text from wrapping to the next line
   overflow: hidden; // Hides overflow
@@ -161,19 +154,19 @@ const Card = styled.div`
   }
 `;
 
-const ImageContainer = styled.div`
-  /* width: 200px; */
-  /* height: 200px; */
-  margin: 0px auto;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  /* @media (max-width: 600px) {
-    width: 100px;
-    height: 100px;
-  } */
-`;
+// const ImageContainer = styled.div`
+//   /* width: 200px; */
+//   /* height: 200px; */
+//   margin: 0px auto;
+//   position: relative;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   /* @media (max-width: 600px) {
+//     width: 100px;
+//     height: 100px;
+//   } */
+// `;
 
 const LoadingSpinner = styled.div`
   display: flex;
@@ -183,12 +176,12 @@ const LoadingSpinner = styled.div`
   height: 100%;
 `;
 
-const Image = styled.img`
-  width: 100%;
-  height: 100%;
-  display: block;
-  margin: 0 auto;
-`;
+// const Image = styled.img`
+//   width: 100%;
+//   height: 100%;
+//   display: block;
+//   margin: 0 auto;
+// `;
 
 const Overlay = styled.div`
   position: fixed;
@@ -446,6 +439,83 @@ const ArchetypeImage = styled.img`
   max-width: 100%;
   height: auto;
   border-radius: 5px;
+`;
+
+const AlignCenter = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1rem 0rem 1rem 0rem;
+
+  @media (max-width: 768px) {
+    border: 2px solid transparent;
+  }
+`;
+
+const HeaderBox = styled.div`
+  /* border: 0.5px solid #282c34; */
+  /* background-color: #282c34; */
+  /* background-color: #f4f4f4; */
+  /* border-radius: 40px; */
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0px 0px 0px 10px;
+  margin: 0px 0px 10px 0px;
+  @media screen and (max-width: 768px) {
+    padding: 12px 0px 10px 5px;
+  }
+`;
+
+const The = styled.div`
+  font-size: 0.8rem; // Adjust as needed
+  color: #57575b;
+  /* margin-bottom: -10px;  */
+  padding: 0;
+  text-transform: uppercase;
+  letter-spacing: 8px;
+  font-weight: 100;
+`;
+
+const Archetype = styled.div`
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.5rem; // Adjust as needed
+  color: #57575b;
+  line-height: 20px;
+  margin: 0;
+  /* padding-top: 2rem; */
+  text-transform: uppercase;
+`;
+
+const Academy = styled.div`
+  text-align: center;
+  font-size: 1rem; // Adjust as needed
+  color: #57575b;
+  padding-right: 5px;
+
+  /* margin-bottom: 12px; // Adjust this value to control the overlap */
+  padding: 0;
+  text-transform: uppercase;
+  letter-spacing: 8px;
+  font-weight: 100;
+`;
+
+const ImageContainer = styled.div`
+  margin: 0px auto;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* You might want to adjust the size here to ensure it fits well with your layout */
+`;
+
+const Image = styled.img`
+  max-height: 50px; /* Adjust this value to make the logo's height complementary to the text */
+  width: auto; /* This will ensure the logo maintains its aspect ratio */
+  display: block;
+  margin: 0 auto;
+  /* If you have specific needs for the logo's width on smaller screens, consider adding media queries */
 `;
 
 const traits = [
@@ -914,10 +984,7 @@ const PersonalityTest = () => {
         <CloseIconContainer onClick={() => setShowModal(false)}>
           <IoClose size={30} /> {/* Adjust size as needed */}
         </CloseIconContainer>
-        {/* Display the matched archetype name here */}
-        <BorderBox>
-          <Header>The Archetype Academy</Header>
-        </BorderBox>
+        <Header>The Archetype Academy</Header>
         <AdmissionHeader>MindPulse-150 results: </AdmissionHeader>
         <FlexContainer>
           {/* Scores Display */}
@@ -945,13 +1012,10 @@ const PersonalityTest = () => {
         </FlexContainer>
         {imageLoaded && (
           <>
-            {/* <AdmissionHeader>Admissions</AdmissionHeader> */}
-
             <ButtonContainer>
               <Button onClick={generateQRCode} disabled={isQRCodeGenerating}>
                 {qrButtonLabel}
               </Button>
-              {/* <Button onClick={downloadQRCode}>Download</Button> */}
             </ButtonContainer>
             <FlexRow>
               <ArchetypeCard>
@@ -992,8 +1056,16 @@ const PersonalityTest = () => {
   );
   return (
     <Container>
-      {/* <h2>{currentTrait.trait}</h2> */}
-      {/* <p>{currentTrait.description}</p> */}
+      <AlignCenter>
+        <ImageBox>
+          <Image to="//carl-xii.web.app/" target="_blank" src={SquareLOGO} />
+        </ImageBox>
+        <HeaderBox>
+          <The>The</The>
+          <Archetype>Archetype</Archetype>
+          <Academy>Academy</Academy>
+        </HeaderBox>
+      </AlignCenter>
       <HeadContainer>
         <SubSubHeader>
           Trait {currentTraitIndex + 1} of {traits.length}
